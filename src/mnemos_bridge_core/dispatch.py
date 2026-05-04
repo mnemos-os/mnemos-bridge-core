@@ -24,3 +24,35 @@ async def dispatch(client: McpClient, name: str, args: dict, *, retries: int = 2
             await anyio.sleep(1)
 
     raise RuntimeError("dispatch exhausted retry loop unexpectedly")
+
+
+class Dispatcher:
+    """Class-shaped wrapper around ``dispatch`` for adapters that prefer
+    instance-method ergonomics. ``Dispatcher().dispatch(client, ...)``
+    is identical to calling the module-level ``dispatch`` directly.
+
+    Adapters can hold a ``Dispatcher`` instance with custom retry/timeout
+    defaults and reuse it across many tool calls without re-passing those
+    knobs every time.
+    """
+
+    def __init__(self, *, retries: int = 2, timeout: float = 30) -> None:
+        self._retries = retries
+        self._timeout = timeout
+
+    async def dispatch(
+        self,
+        client: McpClient,
+        name: str,
+        args: dict,
+        *,
+        retries: int | None = None,
+        timeout: float | None = None,
+    ) -> ToolResult:
+        return await dispatch(
+            client,
+            name,
+            args,
+            retries=self._retries if retries is None else retries,
+            timeout=self._timeout if timeout is None else timeout,
+        )
