@@ -1,0 +1,357 @@
+[
+  {
+    "name": "search_memories",
+    "description": "Full-text search across stored MNEMOS memories.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "query": {"type": "string", "description": "Search query text."},
+        "limit": {"type": "integer", "description": "Maximum number of memories to return.", "default": 10, "minimum": 1},
+        "category": {"type": "string", "description": "Optional category filter."}
+      },
+      "required": ["query"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "create_memory",
+    "description": "Create a new MNEMOS memory.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "content": {"type": "string", "description": "Memory body text."},
+        "category": {"type": "string", "description": "Memory category."},
+        "tags": {
+          "type": "array",
+          "description": "Optional tags for retrieval and grouping.",
+          "items": {"type": "string"}
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Optional structured metadata.",
+          "additionalProperties": true
+        }
+      },
+      "required": ["content", "category"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "get_memory",
+    "description": "Fetch a memory by its identifier.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "memory_id": {"type": "string", "description": "Memory identifier."}
+      },
+      "required": ["memory_id"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "update_memory",
+    "description": "Update content, category, or tags for an existing memory.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "memory_id": {"type": "string", "description": "Memory identifier."},
+        "content": {"type": "string", "description": "Replacement memory body text."},
+        "category": {"type": "string", "description": "Replacement category."},
+        "tags": {
+          "type": "array",
+          "description": "Replacement tag list.",
+          "items": {"type": "string"}
+        }
+      },
+      "required": ["memory_id"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "delete_memory",
+    "description": "Soft-delete a memory by its identifier.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "memory_id": {"type": "string", "description": "Memory identifier."}
+      },
+      "required": ["memory_id"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "list_memories",
+    "description": "List memories with optional category and pagination filters.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "category": {"type": "string", "description": "Optional category filter."},
+        "limit": {"type": "integer", "description": "Maximum number of memories to return.", "default": 20, "minimum": 1},
+        "offset": {"type": "integer", "description": "Pagination offset.", "default": 0, "minimum": 0}
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "get_stats",
+    "description": "Return MNEMOS system and corpus statistics.",
+    "input_schema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "kg_create_triple",
+    "description": "Create a knowledge graph subject-predicate-object triple.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "subject": {"type": "string", "description": "Triple subject."},
+        "predicate": {"type": "string", "description": "Triple predicate."},
+        "object": {"type": "string", "description": "Triple object."},
+        "metadata": {
+          "type": "object",
+          "description": "Optional triple metadata.",
+          "additionalProperties": true
+        }
+      },
+      "required": ["subject", "predicate", "object"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "kg_search",
+    "description": "Search the MNEMOS knowledge graph.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "query": {"type": "string", "description": "Graph search query."},
+        "limit": {"type": "integer", "description": "Maximum number of triples to return.", "default": 10, "minimum": 1}
+      },
+      "required": ["query"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "kg_timeline",
+    "description": "Return a temporal view of knowledge graph changes.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "start_date": {"type": "string", "description": "Inclusive start date in ISO 8601 format."},
+        "end_date": {"type": "string", "description": "Inclusive end date in ISO 8601 format."},
+        "limit": {"type": "integer", "description": "Maximum number of timeline entries.", "default": 20, "minimum": 1}
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "update_triple",
+    "description": "Update fields on an existing knowledge graph triple.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "triple_id": {"type": "string", "description": "Triple identifier."},
+        "subject": {"type": "string", "description": "Replacement subject."},
+        "predicate": {"type": "string", "description": "Replacement predicate."},
+        "object": {"type": "string", "description": "Replacement object."}
+      },
+      "required": ["triple_id"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "delete_triple",
+    "description": "Delete a knowledge graph triple by its identifier.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "triple_id": {"type": "string", "description": "Triple identifier."}
+      },
+      "required": ["triple_id"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "bulk_create_memories",
+    "description": "Create multiple memories in one batch.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "memories": {
+          "type": "array",
+          "description": "Memory creation payloads.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "content": {"type": "string", "description": "Memory body text."},
+              "category": {"type": "string", "description": "Memory category."},
+              "tags": {
+                "type": "array",
+                "description": "Optional tags.",
+                "items": {"type": "string"}
+              },
+              "metadata": {
+                "type": "object",
+                "description": "Optional structured metadata.",
+                "additionalProperties": true
+              }
+            },
+            "required": ["content", "category"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["memories"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "branch_memory",
+    "description": "Create a named branch for a versioned memory.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "memory_id": {"type": "string", "description": "Memory identifier."},
+        "branch_name": {"type": "string", "description": "Branch name to create."}
+      },
+      "required": ["memory_id", "branch_name"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "checkout_memory",
+    "description": "Switch a versioned memory to a named branch.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "memory_id": {"type": "string", "description": "Memory identifier."},
+        "branch_name": {"type": "string", "description": "Branch name to check out."}
+      },
+      "required": ["memory_id", "branch_name"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "diff_memory_commits",
+    "description": "Return the diff between two memory commits.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "memory_id": {"type": "string", "description": "Memory identifier."},
+        "commit_a": {"type": "string", "description": "Base commit identifier."},
+        "commit_b": {"type": "string", "description": "Comparison commit identifier."}
+      },
+      "required": ["memory_id", "commit_a", "commit_b"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "log_memory",
+    "description": "Return version history for a memory.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "memory_id": {"type": "string", "description": "Memory identifier."},
+        "limit": {"type": "integer", "description": "Maximum number of commits to return.", "default": 10, "minimum": 1}
+      },
+      "required": ["memory_id"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "list_deletions",
+    "description": "List soft-deleted memories with optional filters.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "category": {"type": "string", "description": "Optional category filter."},
+        "limit": {"type": "integer", "description": "Maximum number of deleted memories.", "default": 20, "minimum": 1}
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "kronos_anomalies",
+    "description": "Detect anomalies in memory activity over a recent time window.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "category": {"type": "string", "description": "Optional category filter."},
+        "window_days": {"type": "integer", "description": "Analysis window in days.", "default": 7, "minimum": 1}
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "kronos_forecast",
+    "description": "Forecast future memory trends for a category or full corpus.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "category": {"type": "string", "description": "Optional category filter."},
+        "horizon_days": {"type": "integer", "description": "Forecast horizon in days.", "default": 30, "minimum": 1}
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "pantheon_list_models",
+    "description": "List available Pantheon model routes.",
+    "input_schema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "pantheon_route_explain",
+    "description": "Explain the Pantheon routing decision for a prompt.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "prompt": {"type": "string", "description": "Prompt to route."},
+        "task_type": {"type": "string", "description": "Optional task classification hint."}
+      },
+      "required": ["prompt"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "recommend_model",
+    "description": "Recommend a model for a task description and constraints.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "task_description": {"type": "string", "description": "Description of the target task."},
+        "constraints": {
+          "type": "object",
+          "description": "Optional routing constraints such as budget, latency, or modality.",
+          "additionalProperties": true
+        }
+      },
+      "required": ["task_description"],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "input_schema",
+    "description": "Return the input schema for a named MNEMOS tool.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "tool_name": {"type": "string", "description": "Tool name to inspect."}
+      },
+      "required": ["tool_name"],
+      "additionalProperties": false
+    }
+  }
+]
