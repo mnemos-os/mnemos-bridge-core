@@ -25,6 +25,23 @@ class McpClient:
     def from_url(cls, url: str, *, token: str, timeout: float = 30) -> Self:
         return cls(url, token=token, timeout=timeout)
 
+    @classmethod
+    async def open_from_url(cls, url: str, *, token: str, timeout: float = 30) -> Self:
+        """Construct + open the SSE session in one call. Equivalent to
+        ``client = McpClient.from_url(...); await client.__aenter__()``.
+        Adapters that don't want to wrap every call site in ``async with``
+        should use this and pair it with ``await client.aclose()`` (or
+        ``await client.__aexit__(None, None, None)``) on shutdown.
+        """
+        client = cls.from_url(url, token=token, timeout=timeout)
+        await client.__aenter__()
+        return client
+
+    async def aclose(self) -> None:
+        """Close the SSE session if open. Mirrors __aexit__ but takes no
+        exception args. Safe to call multiple times."""
+        await self.__aexit__(None, None, None)
+
     async def __aenter__(self) -> Self:
         self._exit_stack = AsyncExitStack()
         headers = {"Authorization": f"Bearer {self.token}"}
